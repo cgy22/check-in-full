@@ -1,0 +1,40 @@
+# Dependencies and build output
+node_modules/
+unpackage/
+dist/
+build/
+.hbuilderx/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
+*.cer
+*.mobileprovision
+*.provisionprofile
+
+# Local logs and temporary files
+*.log
+ai_log.txt
+AI_LOG.md
+.tmp*
+tmp/
+temp/
+
+# Local test data
+test-data/
+fixtures/private/

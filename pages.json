@@ -1,0 +1,201 @@
+{
+  "pages": [
+    {
+      "path": "pages/launch/launch",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/auth/login",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/auth/register",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/profile/delete-account",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/class/create",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/class/join",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/class/list",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/class/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/checkin/create",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9"
+      }
+    },
+    {
+      "path": "pages/checkin/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/checkin/participants",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/appeal/apply",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/appeal/list",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/appeal/mine",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/appeal/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/checkin/manage",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/checkin/result",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/class/attendance",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/class/member-attendance",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/profile/settings",
+      "style": {
+        "navigationStyle": "custom",
+        "backgroundColor": "#f4efe9",
+        "enablePullDownRefresh": false
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "瓦莱希雅大学签到",
+    "navigationBarBackgroundColor": "#f4efe9",
+    "backgroundColor": "#f4efe9"
+  },
+  "tabBar": {
+    "color": "#8f7570",
+    "selectedColor": "#a51515",
+    "backgroundColor": "#fbf8f4",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "签到",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/mine.png",
+        "selectedIconPath": "static/tabbar/mine-active.png"
+      }
+    ]
+  },
+  "uniIdRouter": {}
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f4efe9" />
+  <title>页面不存在 · 瓦莱希雅大学签到系统</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 88% 0%, rgba(165, 21, 21, 0.12), rgba(165, 21, 21, 0) 40%),
+        radial-gradient(circle at 0% 100%, rgba(201, 154, 46, 0.1), rgba(201, 154, 46, 0) 42%),
+        #f4efe9;
+      color: #2d1616;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "PingFang SC",
+        "Hiragino Sans GB",
+        "Microsoft YaHei",
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .mark {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #b21b1b, #6f0c0c);
+      color: #fff8f2;
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 64px;
+      letter-spacing: -1px;
+      box-shadow: 0 14px 30px rgba(111, 12, 12, 0.24);
+    }
+
+    .code {
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: 76px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -4px;
+      color: rgba(165, 21, 21, 0.16);
+    }
+
+    h1 {
+      margin: 10px 0 0;
+      font-family: "Songti SC", "Noto Serif SC", "STSong", serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #3b1d1d;
+    }
+
+    .sub {
+      margin: 6px 0 0;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #a98a82;
+    }
+
+    .desc {
+      margin: 22px 0 0;
+      padding: 14px 16px;
+      border: 1px solid rgba(165, 21, 21, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      line-height: 1.8;
+      color: #7b5b55;
+      text-align: left;
+    }
+
+    .desc strong {
+      color: #4b2a2a;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      flex: 1;
+      height: 44px;
+      border: 0;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition:
+        transform 0.2s cubic-bezier(0.05, 0.7, 0.1, 1),
+        opacity 0.2s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .primary {
+      background: #a51515;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(165, 21, 21, 0.18);
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid rgba(165, 21, 21, 0.18);
+      color: #a51515;
+    }
+
+    .hint {
+      min-height: 16px;
+      margin-top: 12px;
+      font-size: 10px;
+      line-height: 1.6;
+      color: #b09a94;
+    }
+
+    .footer {
+      margin-top: 26px;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      color: #b6a39d;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="mark">Va</div>
+    <div class="code">404</div>
+    <h1>页面不存在</h1>
+    <p class="sub">PAGE NOT FOUND</p>
+
+    <div class="desc">
+      你访问的页面可能已被移动、删除，或链接地址不完整。
+      <br />
+      <strong>请返回上一页，或从应用首页重新进入。</strong>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="back">返回上一页</button>
+      <button class="ghost" id="home">返回首页</button>
+    </div>
+
+    <div class="hint" id="hint"></div>
+    <div class="footer">VALENCIA UNIVERSITY · CHECK-IN</div>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var hint = document.getElementById('hint');
+
+      document.getElementById('back').addEventListener('click', function () {
+        if (window.history.length > 1) {
+          window.history.back();
+          return;
+        }
+        hint.textContent = '当前没有上一页，请从应用首页重新进入。';
+      });
+
+      document.getElementById('home').addEventListener('click', function () {
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'VU_404_HOME' }, '*');
+            return;
+          }
+          window.location.href = '/';
+        } catch (e) {
+          hint.textContent = '请从应用首页重新进入。';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
