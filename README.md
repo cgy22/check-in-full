@@ -1,6 +1,6 @@
 # 🎓 Valencia University Check-in System
 
-A private, production-oriented attendance system for Valencia University, built with uni-app (Vue 3), Supabase, and Cloudflare Turnstile. It runs on H5 and Android, with a single codebase, strict database access rules, and a deep-red mica visual language.
+A private, production-oriented attendance system for the fictional Valencia University, built with uni-app (Vue 3), Supabase, and Cloudflare Turnstile. It runs on H5 and Android, with a single codebase, strict database access rules, and a deep-red mica visual language.
 
 > **Private and confidential.** This repository and every file in it are proprietary. No permission is granted to copy, distribute, sublicense, modify, publish, or use any part of this project without prior written authorization from Dorn Hub.
 
@@ -19,6 +19,16 @@ The project is intentionally opinionated:
 - **Strict RLS.** Business writes happen through `SECURITY DEFINER` RPCs. Direct table writes are revoked.
 - **No map dependency.** The 1 km rule uses the publisher's device location as the circle center. There is no place search, map tile, POI lookup, or map API key.
 - **Mobile-first, desktop-safe.** The same H5 build works at a subpath and the Android build uses native camera and location.
+
+---
+
+## 🧪 Fictional Scenario Notice
+
+All application scenarios, organizations, classes, users, student IDs, locations, attendance events, records, appeal cases, and related data depicted or supported by this project are entirely fictional and are intended only for demonstration, development, and testing.
+
+**“Valencia University” (瓦莱希雅大学) is a fictitious name.** It does not refer to any real university, educational institution, organization, or entity. Any resemblance to an actual institution, person, or event is purely coincidental.
+
+No real student, employee, or institutional data should be entered into demonstration environments.
 
 ---
 
@@ -464,7 +474,7 @@ Dorn Hub.
 
 # 🎓 瓦莱希雅大学签到系统
 
-一个面向瓦莱希雅大学的私有化、生产级签到系统，基于 uni-app（Vue 3）、Supabase 与 Cloudflare Turnstile 构建，同时运行在 H5 与 Android 端。项目使用单一代码库、严格的数据访问规则，以及深红色云母质感视觉语言。
+一个面向虚构的瓦莱希雅大学的私有化、生产级签到系统，基于 uni-app（Vue 3）、Supabase 与 Cloudflare Turnstile 构建，同时运行在 H5 与 Android 端。项目使用单一代码库、严格的数据访问规则，以及深红色云母质感视觉语言。
 
 > **私有且保密。** 本仓库及其中所有文件均为 Dorn Hub 的专有财产。未经 Dorn Hub 事先书面授权，任何人不得复制、分发、再许可、修改、发布或使用本项目的任何部分。
 
@@ -483,6 +493,16 @@ Dorn Hub.
 - **严格 RLS。** 业务写入只通过 `SECURITY DEFINER` RPC 完成，直接写表权限被撤销。
 - **不依赖地图。** 1 km 校验以发布者发布时的设备位置为圆心，不提供地点搜索、地图瓦片、POI 或地图 Key。
 - **移动优先，兼容桌面。** 同一套 H5 可以部署在子目录，Android 原生使用相机与定位。
+
+---
+
+## 🧪 虚构情景声明
+
+本项目涉及的所有应用情景、学校、班级、用户、学号、地点、签到活动、签到记录、补签案例及相关数据均为虚构，仅用于演示、开发和测试。
+
+**“瓦莱希雅大学”（Valencia University）是虚构名称。** 它不对应任何真实大学、教育机构、组织或实体。如有雷同，纯属巧合。
+
+请勿在演示环境中录入真实学生、教职工或学校数据。
 
 ---
 
