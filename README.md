@@ -235,6 +235,28 @@ The design references the campus activity and enrollment platform and Dorn Hub U
 
 ## 🚀 Getting Started
 
+### 🌐 Option 1: Open the online H5
+
+Use the live URL listed in the repository's **About** panel or the latest **Release**:
+
+```text
+https://<online-host>/<base-path>/
+```
+
+No installation is required. Open the URL, register an account, or sign in.
+
+### 📱 Option 2: Install the Android APK
+
+1. Open the repository's **Releases** page.
+2. Download the latest `valencia-checkin-v1.0.0.apk`.
+3. On Android, allow installation from the browser/file manager you used.
+4. Open the app and register or sign in.
+5. If provided, verify the APK against the SHA-256 checksum in the release.
+
+### 🛠️ Option 3: Build from source
+
+Follow the prerequisites and build steps below.
+
 ### ✅ Prerequisites
 
 - HBuilderX with a Vue 3 / uni-app project.
@@ -316,20 +338,22 @@ uni.webview.js
 
 Configure either:
 
-- a Cloudflare Worker route such as `dornhub.eu.org/checkin-api*`, or
+- a Cloudflare Worker route such as `<your-host>/checkin-api*`, or
 - a same-origin proxy at `.private/check-in/proxy.php`.
 
 The bridge is not a bypass of authentication. It forwards the user's JWT.
 
 ### 🌐 H5 Deployment
 
-The H5 build is configured for:
+This repository uses a configurable subpath deployment. The checked-in configuration example is:
 
 ```text
-https://dornhub.eu.org/valencia/check-in/
+/valencia/check-in/
 ```
 
-`manifest.json` sets:
+Set the public URL in the repository's **About** panel or the latest **Release**. If your deployment path differs, update the matching `publicPath` and `router.base` values in `manifest.json`.
+
+`manifest.json` currently sets:
 
 ```json
 "h5": {
@@ -681,6 +705,28 @@ uni-app 客户端
 
 ## 🚀 快速开始
 
+### 🌐 方式一：直接访问在线 H5
+
+使用仓库 **About** 面板或最新 **Release** 中公布的在线地址：
+
+```text
+https://<在线域名>/<部署路径>/
+```
+
+无需安装。打开地址后注册账号或直接登录。
+
+### 📱 方式二：下载 Android APK 安装
+
+1. 打开仓库的 **Releases** 页面。
+2. 下载最新的 `valencia-checkin-v1.0.0.apk`。
+3. 在 Android 上允许当前浏览器或文件管理器安装未知来源应用。
+4. 安装后打开 App，注册或登录。
+5. 如 Release 提供了 SHA-256 校验值，安装前先核对。
+
+### 🛠️ 方式三：从源码构建
+
+按下面的前置条件与构建步骤操作。
+
 ### ✅ 前置条件
 
 - 安装 HBuilderX。
@@ -760,20 +806,22 @@ uni.webview.js
 
 并配置：
 
-- Cloudflare Worker 路由，例如 `dornhub.eu.org/checkin-api*`；或
+- Cloudflare Worker 路由，例如 `<your-host>/checkin-api*`；或
 - 同源代理 `.private/check-in/proxy.php`。
 
 桥接不是绕过认证，它只转发用户 JWT。
 
 ### 🌐 H5 部署
 
-H5 目标地址：
+本项目使用可配置的子路径部署。当前仓库中的配置示例是：
 
 ```text
-https://dornhub.eu.org/valencia/check-in/
+/valencia/check-in/
 ```
 
-`manifest.json` 已配置：
+在线地址请填写在仓库 **About** 面板或最新 **Release** 中。如果实际部署路径不同，请同步修改 `manifest.json` 里的 `publicPath` 和 `router.base`。
+
+`manifest.json` 当前配置：
 
 ```json
 "h5": {
