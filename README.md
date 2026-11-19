@@ -2,7 +2,7 @@
 
 A private, production-oriented attendance system for the fictional Valencia University, built with uni-app (Vue 3), Supabase, and Cloudflare Turnstile. It runs on H5 and Android, with a single codebase, strict database access rules, and a deep-red mica visual language.
 
-> **Private and confidential.** This repository and every file in it are proprietary. No permission is granted to copy, distribute, sublicense, modify, publish, or use any part of this project without prior written authorization from Dorn Hub.
+> **Private.** This repository and every file in it are proprietary. No permission is granted to copy, distribute, sublicense, modify, publish, or use any part of this project without prior written authorization from Dorn Hub.
 
 ---
 
@@ -467,7 +467,7 @@ See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the full MIT text.
 
 Copyright © 2021-2026 Dorn Hub. All rights reserved.
 
-This project and all associated source code, database schemas, SQL functions, edge functions, deployment scripts, HTML bridge files, documentation, visual assets, and design materials are private and confidential.
+This project and all associated source code, database schemas, SQL functions, edge functions, deployment scripts, HTML bridge files, documentation, visual assets, and design materials are private.
 
 No permission is granted to any person or organization to:
 
@@ -500,7 +500,7 @@ Dorn Hub.
 
 一个面向虚构的瓦莱希雅大学的私有化、生产级签到系统，基于 uni-app（Vue 3）、Supabase 与 Cloudflare Turnstile 构建，同时运行在 H5 与 Android 端。项目使用单一代码库、严格的数据访问规则，以及深红色云母质感视觉语言。
 
-> **私有且保密。** 本仓库及其中所有文件均为 Dorn Hub 的专有财产。未经 Dorn Hub 事先书面授权，任何人不得复制、分发、再许可、修改、发布或使用本项目的任何部分。
+> **私有。** 本仓库及其中所有文件均为 Dorn Hub 的专有财产。未经 Dorn Hub 事先书面授权，任何人不得复制、分发、再许可、修改、发布或使用本项目的任何部分。
 
 ---
 
@@ -937,7 +937,7 @@ HBuilderX 发行：
 
 Copyright © 2021-2026 Dorn Hub. All rights reserved.
 
-本项目及其所有源代码、数据库结构、SQL 函数、边缘函数、部署脚本、HTML 桥接文件、文档、视觉资产与设计材料均为私有且保密。
+本项目及其所有源代码、数据库结构、SQL 函数、边缘函数、部署脚本、HTML 桥接文件、文档、视觉资产与设计材料均为私有。
 
 任何人都不得：
 
