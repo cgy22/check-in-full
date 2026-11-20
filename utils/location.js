@@ -64,7 +64,34 @@ function fromPlus() {
   })
 }
 
+function readNativeLocation() {
+  // #ifdef H5
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const lat = Number(params.get('native_lat'))
+    const lng = Number(params.get('native_lng'))
+    const accuracy = Number(params.get('native_accuracy') || 0)
+    const ts = Number(params.get('native_ts') || 0)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
+    if (!ts || Date.now() - ts > 10 * 60 * 1000) return null
+    if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null
+    return {
+      latitude: lat,
+      longitude: lng,
+      accuracy: Number.isFinite(accuracy) ? accuracy : 0,
+      source: 'native-bridge'
+    }
+  } catch (e) {
+    return null
+  }
+  // #endif
+  return null
+}
+
 export async function getCurrentGcj02() {
+  const nativeLocation = readNativeLocation()
+  if (nativeLocation) return nativeLocation
+
   let raw
   try {
     raw = await fromUni()

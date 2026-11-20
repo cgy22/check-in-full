@@ -259,11 +259,18 @@
 
       <text class="refresh-hint">下拉刷新获取最新签到人数与签到码</text>
     </view>
+
+    <view v-if="h5ScannerVisible" class="h5-scanner">
+      <video id="vu-h5-scan-video" class="h5-scanner__video" autoplay muted playsinline></video>
+      <view class="h5-scanner__frame"></view>
+      <text class="h5-scanner__hint">将二维码放入框内</text>
+      <button class="h5-scanner__cancel" @click="stopH5Scanner">取消</button>
+    </view>
   </view>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
 import { onLoad, onPullDownRefresh, onShow } from '@dcloudio/uni-app'
 import AppHeader from '../../components/AppHeader.vue'
 import MicaCard from '../../components/MicaCard.vue'
@@ -305,6 +312,9 @@ const submitting = ref(false)
 const submitError = ref('')
 const scanning = ref(false)
 const scannedSource = ref('code')
+const h5ScannerVisible = ref(false)
+let h5ScannerStream = null
+let h5ScannerTimer = null
 const locationInfo = ref(null)
 const locationChecking = ref(false)
 const locationError = ref('')
@@ -775,16 +785,34 @@ function acceptScanValue(value) {
   setTimeout(() => submitCode('qr'), 30)
 }
 
-function loadImage(path) {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = () => reject(new Error('图片加载失败'))
-    img.src = path
-  })
+function stopH5Scanner() {
+  if (h5ScannerTimer) {
+    clearTimeout(h5ScannerTimer)
+    h5ScannerTimer = null
+  }
+  if (h5ScannerStream) {
+    try {
+      h5ScannerStream.getTracks().forEach(track => track.stop())
+    } catch (e) {}
+    h5ScannerStream = null
+  }
+  if (typeof document !== 'undefined') {
+    const video = document.getElementById('vu-h5-scan-video')
+    if (video) video.srcObject = null
+  }
+  h5ScannerVisible.value = false
+  scanning.value = false
 }
 
 async function scanH5() {
+  if (typeof navigator === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    uni.showModal({
+      title: '当前环境不支持摄像头',
+      content: '请改用六位数字输入，或使用 Android App 原生扫码。',
+      showCancel: false
+    })
+    return
+  }
   if (typeof BarcodeDetector === 'undefined') {
     uni.showModal({
       title: '当前浏览器不支持扫码',
@@ -793,27 +821,47 @@ async function scanH5() {
     })
     return
   }
+
+  h5ScannerVisible.value = true
+  await nextTick()
+
+  const video = document.getElementById('vu-h5-scan-video')
+  if (!video) {
+    stopH5Scanner()
+    return
+  }
+
   try {
-    const chosen = await uni.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['camera']
+    h5ScannerStream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { facingMode: { ideal: 'environment' } }
     })
-    const path = chosen && chosen.tempFilePaths && chosen.tempFilePaths[0]
-    if (!path) return
-    const img = await loadImage(path)
+    video.srcObject = h5ScannerStream
+    await video.play()
+
     const detector = new BarcodeDetector({ formats: ['qr_code'] })
-    const codes = await detector.detect(img)
-    if (!codes || !codes.length) {
-      uni.showToast({ title: '没有识别到二维码', icon: 'none' })
-      return
+    const detectFrame = async () => {
+      if (!h5ScannerVisible.value) return
+      try {
+        const codes = await detector.detect(video)
+        if (codes && codes.length) {
+          const value = codes[0].rawValue
+          stopH5Scanner()
+          acceptScanValue(value)
+          return
+        }
+      } catch (e) {}
+      h5ScannerTimer = setTimeout(detectFrame, 260)
     }
-    acceptScanValue(codes[0].rawValue)
+    detectFrame()
   } catch (e) {
-    if (e && e.errMsg && e.errMsg.indexOf('cancel') !== -1) return
+    stopH5Scanner()
+    const denied = e && (e.name === 'NotAllowedError' || e.name === 'SecurityError')
     uni.showModal({
-      title: '无法扫码',
-      content: '当前环境无法读取二维码，请改用六位数字输入。',
+      title: '无法打开摄像头',
+      content: denied
+        ? '摄像头权限被拒绝，请允许后重试，或改用六位数字输入。'
+        : '当前环境无法调用摄像头，请改用六位数字输入。',
       showCancel: false
     })
   }
@@ -872,6 +920,7 @@ onPullDownRefresh(async () => {
 })
 
 onBeforeUnmount(() => {
+  stopH5Scanner()
   if (clockTimer) {
     clearInterval(clockTimer)
     clockTimer = null
@@ -1421,6 +1470,57 @@ onBeforeUnmount(() => {
 }
 .appeal-action-btn[disabled] {
   opacity: 0.5;
+}
+.h5-scanner {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.h5-scanner__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.h5-scanner__frame {
+  position: relative;
+  z-index: 1;
+  width: 220px;
+  height: 220px;
+  border: 2px solid rgba(255, 248, 242, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.42);
+}
+.h5-scanner__hint {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(112px + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  color: #fff8f2;
+}
+.h5-scanner__cancel {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(42px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 38px;
+  line-height: 38px;
+  border: 1px solid rgba(255, 248, 242, 0.5);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff8f2;
+  font-size: 12px;
 }
 .refresh-hint {
   display: block;

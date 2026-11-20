@@ -388,7 +388,7 @@ Build with HBuilderX:
 Release → Website-H5 mobile
 ```
 
-Upload the **entire** output directory, including `assets` and `static`, to the subdirectory. See [docs/H5_DEPLOY.md](docs/H5_DEPLOY.md) for cache, MIME, and SPA fallback rules.
+Upload the **entire** output directory, including `assets` and `static`, to the subdirectory. Before each release, update both `APP_VERSION` in `utils/config.js` and `static/version.json`; the H5 client uses them to detect stale builds. See [docs/H5_DEPLOY.md](docs/H5_DEPLOY.md) for cache, MIME, and SPA fallback rules.
 
 ### 📱 Android Build
 
@@ -873,7 +873,7 @@ HBuilderX 发行：
 发行 → 网站-H5手机版
 ```
 
-把完整产物（包含 `assets`、`static`）上传到该子目录。缓存、MIME、SPA 回退规则见 [docs/H5_DEPLOY.md](docs/H5_DEPLOY.md)。
+把完整产物（包含 `assets`、`static`）上传到该子目录。每次发版前同时更新 `utils/config.js` 的 `APP_VERSION` 和 `static/version.json`，H5 客户端会用它们检查旧构建。缓存、MIME、SPA 回退规则见 [docs/H5_DEPLOY.md](docs/H5_DEPLOY.md)。
 
 ### 📱 Android 打包
 

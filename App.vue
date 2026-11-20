@@ -1,9 +1,15 @@
 <script>
 import { resetHomeCache } from './utils/homeCache'
+import { checkH5Update } from './utils/updateCheck'
 
 export default {
   onLaunch() {
     resetHomeCache()
+    // #ifdef H5
+    setTimeout(() => {
+      checkH5Update()
+    }, 600)
+    // #endif
     // #ifdef APP-PLUS
     setTimeout(() => {
       try {
