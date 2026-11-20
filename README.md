@@ -164,6 +164,10 @@ uni-app client
 
 ---
 
+The page tree contains only the Full application. The Lite shell is not part of this repository; its APK is distributed through GitHub Releases only.
+
+---
+
 ## 🎨 Design Language
 
 The interface follows the reference direction established for the project:
@@ -245,13 +249,26 @@ https://<online-host>/<base-path>/
 
 No installation is required. Open the URL, register an account, or sign in.
 
-### 📱 Option 2: Install the Android APK
+### 📱 Option 2: Install an Android APK
+
+The latest **Release** provides two Android builds:
+
+| Build | Purpose |
+|---|---|
+| `valencia-checkin-full-v1.0.0.apk` | Full application with the complete native and H5 implementation |
+| `valencia-checkin-lite-v1.0.0.apk` | Lightweight embedded-H5 shell for quick access |
 
 1. Open the repository's **Releases** page.
-2. Download the latest `valencia-checkin-v1.0.0.apk`.
+2. Download either the Full or Lite APK.
 3. On Android, allow installation from the browser/file manager you used.
 4. Open the app and register or sign in.
 5. If provided, verify the APK against the SHA-256 checksum in the release.
+
+> **Release-only Lite build**
+>
+> The Lite project source, build output, and APK are intentionally **not stored in this repository**. The Lite APK is distributed only as a Release asset. This repository contains the Full source.
+>
+> The Lite build uses the same application name, icon, permissions, and H5 endpoint as the Full build; only its source distribution differs.
 
 ### 🛠️ Option 3: Build from source
 
@@ -661,6 +678,10 @@ uni-app 客户端
 
 ---
 
+本仓库页面目录只包含 Full 应用。轻量版外壳不属于本仓库，其 APK 仅通过 GitHub Releases 分发。
+
+---
+
 ## 🎨 视觉语言
 
 界面遵循项目最初确定的参考方向：
@@ -717,11 +738,24 @@ https://<在线域名>/<部署路径>/
 
 ### 📱 方式二：下载 Android APK 安装
 
+最新 **Release** 提供两个 Android 安装包：
+
+| 安装包 | 用途 |
+|---|---|
+| `valencia-checkin-full-v1.0.0.apk` | 完整应用，包含完整的原生与 H5 实现 |
+| `valencia-checkin-lite-v1.0.0.apk` | 轻量版，内嵌 H5 的快速入口 |
+
 1. 打开仓库的 **Releases** 页面。
-2. 下载最新的 `valencia-checkin-v1.0.0.apk`。
+2. 下载 Full 或 Lite APK。
 3. 在 Android 上允许当前浏览器或文件管理器安装未知来源应用。
 4. 安装后打开 App，注册或登录。
 5. 如 Release 提供了 SHA-256 校验值，安装前先核对。
+
+> **轻量版仅通过 Release 分发**
+>
+> 轻量版源码、构建产物和 APK **不存放在本仓库中**，只作为 Release 附件分发。本仓库只包含 Full 源码。
+>
+> 轻量版使用与 Full 相同的应用名称、图标、权限和 H5 入口，仅源码分发方式不同。
 
 ### 🛠️ 方式三：从源码构建
 
