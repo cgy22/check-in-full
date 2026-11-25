@@ -1,0 +1,14 @@
+{
+  "description": "业务操作审计记录",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "actor_id": { "bsonType": ["string","null"] },
+    "action": { "bsonType": "string" },
+    "entity": { "bsonType": "string" },
+    "entity_id": { "bsonType": "string" },
+    "metadata": { "bsonType": "object" },
+    "created_at": { "bsonType": "string" }
+  }
+}

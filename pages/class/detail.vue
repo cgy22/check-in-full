@@ -1,6 +1,5 @@
 <template>
   <view class="detail-page">
-    <BridgeHost page-path="pages/class/detail" />
     <AppHeader
       :title="classInfo ? classInfo.name : '班级详情'"
       :subtitle="classInfo && classInfo.my_role === 'owner' ? 'OWNER VIEW' : 'CLASS VIEW'"
@@ -102,7 +101,7 @@
         <button v-if="isOwner" class="danger-btn" @click="confirmDeleteClass">删除班级</button>
         <button v-else class="danger-btn" @click="confirmLeave">退出班级</button>
 
-        <text class="detail-foot">班级数据来自 Supabase · 成员变更即时生效</text>
+        <text class="detail-foot">班级成员变更即时生效</text>
       </template>
     </view>
 

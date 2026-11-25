@@ -1,6 +1,5 @@
 <template>
   <view class="class-page">
-    <BridgeHost page-path="pages/class/create" />
     <AppHeader title="新建班级" subtitle="CREATE CLASS" back />
 
     <view class="class-shell">
@@ -35,9 +34,8 @@
 
           <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
-            <TurnstileGate
+            <CaptchaGate
               ref="gateRef"
-              :app-trigger="false"
               action="create_class"
               @success="onCaptchaSuccess"
               @error="onCaptchaError"
@@ -77,15 +75,13 @@ import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import AppHeader from '../../components/AppHeader.vue'
 import MicaCard from '../../components/MicaCard.vue'
-import TurnstileGate from '../../components/TurnstileGate.vue'
+import CaptchaGate from '../../components/CaptchaGate.vue'
 import { useAuth } from '../../composables/useAuth'
-import { useCaptcha } from '../../composables/useCaptcha'
 import { rpc } from '../../utils/authApi'
 import { INVITE_VALIDITY_OPTIONS } from '../../utils/constants'
 import { formatDateTime } from '../../utils/format'
 
 const auth = useAuth()
-const captcha = useCaptcha()
 const gateRef = ref(null)
 
 const isApp = (() => {
@@ -139,7 +135,7 @@ async function submit() {
   try {
     let ticket = null
     if (!isApp) {
-      ticket = await captcha.issue('create_class', captchaToken.value)
+      ticket = captchaToken.value
     }
     const accessToken = await auth.ensureAccessToken()
     const data = await rpc(
@@ -154,7 +150,7 @@ async function submit() {
     successInfo.value = data
   } catch (e) {
     uni.showToast({ title: e.message || '创建失败', icon: 'none', duration: 2600 })
-    // captcha ticket / Turnstile token 通常已被消费，失败后统一要求重新验证
+    // 失败后重新获取一次性验证票据。
     resetCaptcha()
   } finally {
     submitting.value = false

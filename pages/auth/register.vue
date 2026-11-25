@@ -1,6 +1,5 @@
 <template>
   <view class="register-page">
-    <BridgeHost page-path="pages/auth/register" />
     <view class="register-orb register-orb--one"></view>
     <view class="register-orb register-orb--two"></view>
 
@@ -67,10 +66,10 @@
           <text class="step">STEP 01</text>
           <text class="gate__title">先完成人机验证</text>
           <text class="gate__desc">
-            为防止机器批量注册，进入填写表单前需要先通过 Cloudflare Turnstile。
+            输入图片中的字符后即可填写注册表单。
           </text>
           <view class="gate__captcha">
-            <TurnstileGate
+            <CaptchaGate
               ref="gateRef"
               action="register"
               @success="onCaptchaSuccess"
@@ -190,7 +189,7 @@
 import { computed, reactive, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import MicaCard from '../../components/MicaCard.vue'
-import TurnstileGate from '../../components/TurnstileGate.vue'
+import CaptchaGate from '../../components/CaptchaGate.vue'
 import { useAuth } from '../../composables/useAuth'
 import { ENROLLMENT_YEARS, MAJORS } from '../../utils/constants'
 import { validateRegisterForm } from '../../utils/validators'
@@ -283,7 +282,7 @@ async function submit() {
     studentIdCheck.value = ''
   } catch (e) {
     uni.showToast({ title: e.message || '注册失败', icon: 'none', duration: 2800 })
-    if (e.code === 'CAPTCHA_FAILED' || e.code === 'STUDENT_ID_TAKEN' || e.code === 'EMAIL_CONFIRM_ON') {
+    if (e.code === 'CAPTCHA_FAILED' || e.code === 'STUDENT_ID_TAKEN') {
       resetGate()
     }
   } finally {

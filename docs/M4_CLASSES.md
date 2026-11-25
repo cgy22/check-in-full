@@ -1,116 +1,25 @@
 # M4 班级管理
 
-## 已实现
+从首页或个人主页的「＋」打开新建班级或加入班级。个人主页还提供“我创建的班级”和“我加入的班级”入口。
 
-| 文件 | 内容 |
-|---|---|
-| `components/AppHeader.vue` | 统一页头：返回、标题、右上角 `+` |
-| `components/ActionSheet.vue` | 底部动作面板：发布签到 / 新建班级 / 加入班级 |
-| `components/ClassCard.vue` | 班级卡片：成员数、活动数、邀请码、有效期 |
-| `pages/class/create.vue` | 新建班级：名称 + 邀请码有效期 + Turnstile |
-| `pages/class/join.vue` | 加入班级：8 位邀请码 + Turnstile |
-| `pages/class/list.vue` | 我创建的班级 / 我加入的班级 |
-| `pages/class/detail.vue` | 班级详情、邀请码、成员、踢人、退出、删除 |
-| `pages/index/index.vue` | 右上角 `+` 与快捷操作 |
-| `pages/profile/index.vue` | “我创建的班级 / 我加入的班级”入口 + 右上角 `+` |
+## 建班与加入
 
-后端 RPC 已在 M1 完成并测试：
+- `create_class` 根据班级名称和选择的有效期生成 8 位邀请码。有效期可选 1 小时、24 小时、7 天或 30 天。
+- `join_class` 对邀请码去掉首尾空白并转为大写，校验有效期和成员状态。已加入的成员会收到提示。
+- H5 建班与加入班级需要图片验证码，票据用途分别为 `create_class` 和 `join_class`。Android 登录后可直接建班和加入。两个平台均由云函数核对会话。
+- 当前专业字典存放于 `vu_majors`，专业代码 `02` 对应“𣿅语语言文学”。前端选项在 `utils/constants.js`，云端初始化文件为 `vu_majors.init_data.json`。
 
-- `create_class`
-- `join_class`
-- `list_my_classes`
-- `get_class_detail`
-- `kick_class_member`
-- `leave_class`
-- `delete_class`
+## 成员与权限
 
-## 必须先部署 Edge Function：captcha-verify
+- `list_my_classes` 按当前账号与班级关系查询列表。`get_class_detail` 为创建者返回邀请码和成员名单，为普通成员显示班级基本信息和成员数量。
+- `kick_class_member` 供创建者移除普通成员，`leave_class` 供成员退出。退出或移除结束该成员本次在班区间，单场历史签到按活动名单口径保留。
+- `delete_class` 供创建者删除班级。确认后会清理邀请码、成员、签到活动和补签数据。 [云数据库说明](DATABASE.md)
 
-建班/加班需要把 Turnstile token 换成一次性 `captcha_ticket`。这一步必须由服务器完成，不能放在前端。
+## 联调
 
-文件：
+1. 用创建者账号新建班级并复制邀请码。
+2. 用测试成员账号加入，核对错误邀请码、过期邀请码和重复加入的提示。
+3. 分别用创建者、普通成员和班外账号打开班级详情，核对成员名单、邀请码和管理按钮的范围。
+4. 测试成员退出、创建者移除成员和班级删除，核对列表和历史签到行为。
 
-```text
-supabase/functions/captcha-verify/index.ts
-```
-
-### 方式 A：Supabase CLI（推荐）
-
-```bash
-supabase login
-supabase link --project-ref hisewqjyxadmezeiwnzc
-supabase secrets set TURNSTILE_SECRET=<verify_turnstile.php 里的 SECRET_KEY>
-supabase functions deploy captcha-verify --no-verify-jwt
-```
-
-> 真实配对：Site Key `0x4AAAAAAC2E9TsjP-02HPpE`（已在 `utils/config.js`），Secret 用 `部署主机上的 verify_turnstile.php` 里的 `$SECRET_KEY`。
-> **Site Key 和 Secret 必须是一对，不能混用；混用就是“组件成功、服务端 CAPTCHA_FAILED”。**
-
-### 方式 B：Dashboard
-
-1. Supabase Dashboard → **Edge Functions**。
-2. 新建函数，名称必须是 `captcha-verify`。
-3. 把 `supabase/functions/captcha-verify/index.ts` 的内容粘贴进去。
-4. 在 Edge Functions 的 Secrets/环境变量中添加：
-   - `TURNSTILE_SECRET` = `部署主机上的 verify_turnstile.php` 里的 `$SECRET_KEY`（或测试配对 Secret）
-5. 部署，关闭 JWT 验证（对应 `--no-verify-jwt`），因为函数内部会手动校验用户 JWT。
-
-Function URL 应为：
-
-```text
-https://hisewqjyxadmezeiwnzc.supabase.co/functions/v1/captcha-verify
-```
-
-如果没部署，建班/加班会报 `CAPTCHA_FAILED`、404 或桥接超时。
-
-## Turnstile Action
-
-前端 `TurnstileGate` 的 `action` 必须和 RPC 用途一致：
-
-- 新建班级：`create_class`
-- 加入班级：`join_class`
-
-`captcha.html` 会把 action 传给 Turnstile；Edge Function 会校验 `verify.action === purpose`。
-
-## 专业名称修正
-
-`Irelav` 实际是 **𣿅语**。已修改：
-
-- `utils/constants.js` → `{ code: '02', name: '𣿅语语言文学' }`
-- `03_rls_grants_seed.sql` → `('02', '𣿅语语言文学', 2)`
-
-如果数据库已经执行过旧版 03，重跑 03 会自动更新（`on conflict do update`）；也可以单独执行：
-
-```sql
-update public.majors
-set name = '𣿅语语言文学'
-where code = '02';
-```
-
-## H5 验证步骤
-
-1. 重新执行最新 `03_rls_grants_seed.sql`（更新专业名 + 授权）。
-2. 首页右上角点 `+` → 新建班级。
-3. 填班级名称，选邀请码有效期。
-4. 完成 Turnstile；点“创建班级”。
-5. 成功后应显示 8 位邀请码；复制。
-6. 退出登录，注册/登录另一个测试账号。
-7. 首页 `+` → 加入班级，输入邀请码 + Turnstile。
-8. 加入成功 → 班级详情。
-9. 回到创建者账号：
-   - 个人主页 → 我创建的班级 → 班级详情；
-   - 能看到成员；
-   - 点“踢出”测试；
-   - 删除班级需两次确认。
-10. 普通成员详情：
-    - 只能看成员数量，不能看名单；
-    - 可以“退出班级”；
-    - 不能删除班级。
-
-## 已知未做
-
-- 发布签到仍是占位提示，M5 接入。
-- 出勤统计仍是占位提示，M8 接入。
-- Android 未真机测试；等你有线后再验。
-- 建班/加班的 Turnstile 依赖 `challenges.cloudflare.com`，国内网络不稳定时会显示失败。
-- Edge Function 部署是手动步骤；没部署前 M4 只能看页面，不能真正建班/加班。
+接口都由 `valencia-checkin` 提供。相关代码变更后上传该云函数，联调时选择云端运行。 [uniCloud 接入与部署](UNICLOUD_DEPLOY.md)

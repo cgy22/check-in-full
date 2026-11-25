@@ -1,5 +1,5 @@
 // utils/session.js
-const STORAGE_KEY = 'vu_session_v1'
+const STORAGE_KEY = 'vu_session_unicloud_v1'
 
 export function normalizeSession(data) {
   if (!data || !data.access_token) return null

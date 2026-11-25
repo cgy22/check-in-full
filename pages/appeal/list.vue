@@ -1,6 +1,5 @@
 <template>
   <view class="appeal-list-page">
-    <BridgeHost page-path="pages/appeal/list" />
     <AppHeader title="补签申请" subtitle="RECEIVED APPEALS" back />
 
     <view class="list-shell">

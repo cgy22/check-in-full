@@ -1,6 +1,5 @@
 <template>
   <view class="settings-page">
-    <BridgeHost page-path="pages/profile/settings" />
     <AppHeader title="账号设置" subtitle="ACCOUNT SETTINGS" back />
 
     <view class="settings-shell">
@@ -51,10 +50,9 @@
 
           <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
-            <TurnstileGate
+            <CaptchaGate
               ref="basicGateRef"
               action="profile_update"
-              :app-trigger="false"
               @success="basicToken = $event"
               @error="basicToken = ''"
               @expired="basicToken = ''"
@@ -112,10 +110,9 @@
 
           <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
-            <TurnstileGate
+            <CaptchaGate
               ref="passwordGateRef"
               action="change_password"
-              :app-trigger="false"
               @success="passwordToken = $event"
               @error="passwordToken = ''"
               @expired="passwordToken = ''"
@@ -136,16 +133,13 @@ import { computed, reactive, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import AppHeader from '../../components/AppHeader.vue'
 import MicaCard from '../../components/MicaCard.vue'
-import TurnstileGate from '../../components/TurnstileGate.vue'
+import CaptchaGate from '../../components/CaptchaGate.vue'
 import { useAuth } from '../../composables/useAuth'
-import { useCaptcha } from '../../composables/useCaptcha'
-import { getLoginSalt, rpc, updatePassword } from '../../utils/authApi'
-import { randomHex, sha256Hex } from '../../utils/crypto'
+import { rpc } from '../../utils/authApi'
 import { ENROLLMENT_YEARS, MAJORS } from '../../utils/constants'
 import { isValidName, isValidPassword } from '../../utils/validators'
 
 const auth = useAuth()
-const captcha = useCaptcha()
 const profile = computed(() => auth.profile.value || {})
 
 const tab = ref('basic')
@@ -245,7 +239,7 @@ async function saveBasic() {
   try {
     let ticket = null
     if (!isApp) {
-      ticket = await captcha.issue('profile_update', basicToken.value)
+      ticket = basicToken.value
     }
     const data = await rpc(
       'update_profile',
@@ -279,28 +273,14 @@ async function savePassword() {
 
   savingPassword.value = true
   try {
-    const accessToken = await auth.ensureAccessToken()
-    const studentId = profile.value.student_id
-
-    // 1) 本地用旧盐计算旧 hash，再由 RPC 用 auth.users 的 bcrypt 校验
-    const oldSalt = await getLoginSalt(studentId)
-    const oldHash = sha256Hex(`${oldSalt}|${password.oldPassword}`)
-    await rpc('verify_my_password', { p_password_hash: oldHash }, accessToken)
-
-    // 2) H5 验证真人；App 跳过
-    let ticket = null
-    if (!isApp) {
-      ticket = await captcha.issue('change_password', passwordToken.value)
-    }
-
-    // 3) 生成新盐/新 hash，先更新 Supabase Auth，再保存新盐
-    const newSalt = randomHex(16)
-    const newHash = sha256Hex(`${newSalt}|${password.newPassword}`)
-    await updatePassword(newHash, accessToken)
     await rpc(
-      'set_password_salt',
-      { p_new_salt: newSalt, p_captcha_ticket: ticket },
-      accessToken
+      'change_password',
+      {
+        oldPassword: password.oldPassword,
+        newPassword: password.newPassword,
+        ticket: isApp ? null : passwordToken.value
+      },
+      await auth.ensureAccessToken()
     )
 
     password.oldPassword = ''

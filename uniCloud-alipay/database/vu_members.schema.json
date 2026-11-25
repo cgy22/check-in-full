@@ -1,0 +1,14 @@
+{
+  "description": "现有班级成员与历史加入区间",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "class_id": { "bsonType": "string" },
+    "user_id": { "bsonType": "string" },
+    "role": { "bsonType": "string" },
+    "joined_at": { "bsonType": "string" },
+    "active": { "bsonType": "bool" },
+    "periods": { "bsonType": "array" }
+  }
+}

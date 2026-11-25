@@ -1,6 +1,5 @@
 <template>
   <view class="appeal-detail-page">
-    <BridgeHost page-path="pages/appeal/detail" />
     <AppHeader title="补签申请详情" subtitle="APPEAL DETAIL" back />
 
     <view class="detail-shell">

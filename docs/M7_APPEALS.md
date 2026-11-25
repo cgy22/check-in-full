@@ -1,58 +1,19 @@
 # M7 补签申请与审批
 
-## 已接入
+## 学生申请与撤回
 
-### 学生申请补签
+适用成员在活动结束且未签到时，可以从签到详情进入「申请补签」。填写 10 至 500 字的理由。H5 需完成图片验证码，票据用途为 `appeal`。Android 登录后可直接提交。
 
-入口：签到详情 → 已结束且未签到 → 申请补签
+- `apply_makeup` 校验本人应签记录、活动状态与剩余机会。每人每场最多保留 3 次未撤回申请。已有待审批或已通过申请时不能再次提交。
+- 待审批时可用 `withdraw_appeal` 撤回，撤回后的申请不占用次数。个人主页的「我申请的补签」通过 `list_my_appeals` 查看记录。
+- 首页卡片和签到详情显示最近一次补签状态，详情页可查看申请历史和审批备注。
 
-页面：`/pages/appeal/apply?recordId=...&eventId=...`
+## 创建者审批与统计
 
-- 理由 10–500 字；
-- App 点击提交后自动进入 Turnstile，通过后自动提交；
-- H5 保持内联 Turnstile + 提交按钮；
-- 最多 3 次申请；
-- 待审批期间不能重复申请；
-- 通过后不能再次申请。
+在个人主页打开「我收到的补签申请」。`list_received_appeals` 支持待审批、全部、已通过、未通过的筛选。`get_appeal_detail` 向申请人或活动创建者返回申请详情。
 
-### 学生撤回
+活动创建者可通过 `review_appeal` 批准或拒绝待处理申请，并填写最长 500 字的备注。批准会同步更新签到记录为已签到、方式为补签。拒绝会保留当前签到状态。学生仍未签到且有剩余机会时可再次申请。
 
-签到详情或申请详情中，待审批申请可撤回：
+## 联调
 
-- `withdraw_appeal`
-- 撤回后删除该 pending 记录，可重新申请。
-
-### 创建者审批
-
-个人主页 → 我收到的补签申请：
-
-- `list_received_appeals`
-- 待审批 / 全部 / 已通过 / 未通过
-- 点击进入申请详情。
-
-申请详情：
-
-- 申请人、班级、签到时间、理由、历史；
-- 批准：`review_appeal(p_approve=true)`，记录改为 `present` / `makeup`；
-- 拒绝：保留 `absent`，可填写备注；
-- 拒绝后学生仍可再次申请，最多 3 次。
-
-### 状态展示
-
-- 首页签到卡片显示“补签待审 / 补签未通过”；
-- 签到详情显示最近一次申请状态、次数、备注；
-- 3 次机会用完显示不可申请。
-
-## 使用 RPC
-
-- `get_checkin_event`（新增 `my_appeals`）
-- `apply_makeup`
-- `withdraw_appeal`
-- `list_received_appeals`（新增 `event_timezone`）
-- `get_appeal_detail`
-- `review_appeal`
-
-## 需要重跑
-
-- `02_functions.sql`：`get_checkin_event` 的 `my_appeals`、`list_received_appeals` 的 `event_timezone`
-- `03_rls_grants_seed.sql`：已有补签函数授权，重新执行可确保生效
+在测试活动中分别走审批通过、拒绝后重试和撤回。核对 `vu_appeals`、`vu_records`、活动统计和双方列表。普通成员应无法审批，非相关账号应无法读取申请详情。修改接口后上传 `valencia-checkin` 云函数。 [发布验收与测试清单](PRODUCTION_TEST_CHECKLIST.md)

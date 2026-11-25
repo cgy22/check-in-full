@@ -1,6 +1,5 @@
 <template>
   <view class="home-page">
-    <BridgeHost page-path="pages/index/index" />
     <view class="home-orb"></view>
 
     <view class="home-shell">

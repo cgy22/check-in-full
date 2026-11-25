@@ -1,0 +1,45 @@
+[
+  {
+    "IndexName": "class_id_deleted_end_at",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "class_id",
+          "Direction": "1",
+          "Type": "varchar"
+        },
+        {
+          "Name": "deleted",
+          "Direction": "1",
+          "Type": "bool"
+        },
+        {
+          "Name": "end_at",
+          "Direction": "1",
+          "Type": "varchar"
+        }
+      ],
+      "MgoIsUnique": false,
+      "MgoIsSparse": false
+    }
+  },
+  {
+    "IndexName": "creator_id_deleted",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "creator_id",
+          "Direction": "1",
+          "Type": "varchar"
+        },
+        {
+          "Name": "deleted",
+          "Direction": "1",
+          "Type": "bool"
+        }
+      ],
+      "MgoIsUnique": false,
+      "MgoIsSparse": false
+    }
+  }
+]

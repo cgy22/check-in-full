@@ -1,0 +1,40 @@
+[
+  {
+    "IndexName": "class_id_active",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "class_id",
+          "Direction": "1",
+          "Type": "varchar"
+        },
+        {
+          "Name": "active",
+          "Direction": "1",
+          "Type": "bool"
+        }
+      ],
+      "MgoIsUnique": false,
+      "MgoIsSparse": false
+    }
+  },
+  {
+    "IndexName": "user_id_active",
+    "MgoKeySchema": {
+      "MgoIndexKeys": [
+        {
+          "Name": "user_id",
+          "Direction": "1",
+          "Type": "varchar"
+        },
+        {
+          "Name": "active",
+          "Direction": "1",
+          "Type": "bool"
+        }
+      ],
+      "MgoIsUnique": false,
+      "MgoIsSparse": false
+    }
+  }
+]

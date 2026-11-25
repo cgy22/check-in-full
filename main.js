@@ -13,10 +13,8 @@ app.$mount()
 
 // #ifdef VUE3
 import { createSSRApp } from 'vue'
-import BridgeHost from './components/BridgeHost.vue'
 export function createApp() {
   const app = createSSRApp(App)
-  app.component('BridgeHost', BridgeHost)
   return {
     app
   }

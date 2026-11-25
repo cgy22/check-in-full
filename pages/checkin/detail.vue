@@ -1,6 +1,5 @@
 <template>
   <view class="detail-page">
-    <BridgeHost page-path="pages/checkin/detail" />
     <AppHeader title="签到详情" subtitle="CHECK-IN DETAIL" back />
 
     <view class="detail-shell">

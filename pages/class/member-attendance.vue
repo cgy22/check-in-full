@@ -1,6 +1,5 @@
 <template>
   <view class="member-attendance-page">
-    <BridgeHost page-path="pages/class/member-attendance" />
     <AppHeader :title="member.full_name || memberName || '成员出勤'" subtitle="MEMBER ATTENDANCE" back />
 
     <view class="detail-shell">

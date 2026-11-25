@@ -1,0 +1,9 @@
+{
+  "description": "邀请码到班级的唯一映射",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "class_id": { "bsonType": "string" }
+  }
+}

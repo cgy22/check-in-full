@@ -1,77 +1,19 @@
-# M8 结果、统计与账号设置
+# M8 签到结果、出勤与账号设置
 
 ## 我发布的签到
 
-入口：个人主页 → 我发布的签到
+从个人主页打开「我发布的签到」。`list_checkin_events` 按创建者返回活动，页面支持全部、正在签到、未开始、已结束筛选。活动创建者可用 `get_event_results` 查看结果。未开始的活动可以删除，活动开始后可以在详情中提前结束。
 
-- `/pages/checkin/manage`
-- `list_checkin_events('created')`
-- 本地筛选：全部 / 进行中 / 未开始 / 已结束
-- 点击进入签到结果
-
-## 签到结果
-
-`/pages/checkin/result?id=...`
-
-- `get_event_results`
-- 已签到 / 未签到 / 总人数
-- 成员明细：学号、姓名、状态、方式、上一轮码、补签状态
-- 未开始的活动可删除（`delete_checkin_event`）
-- CSV 导出
-
-CSV：
-
-- H5：直接下载文件；
-- App：复制 CSV 文本到剪贴板，可粘贴到表格软件保存。
+结果页包含应签名单、学号、姓名、签到状态、方式、上一轮码、距离、设备标签和补签状态。已签到、补签、未签到分项应与总人数匹配。创建者不计入应签名单。可在 H5 下载 CSV，在 Android 复制 CSV 文本到剪贴板。
 
 ## 班级出勤
 
-入口：班级详情 → 出勤统计（仅创建者）
+班级创建者从班级详情进入「出勤统计」。`get_class_attendance` 汇总仍在班的普通成员和各自应参加的已结束活动。`get_class_member_attendance` 显示单个成员对应场次、状态和补签结果。
 
-- `/pages/class/attendance`
-- `get_class_attendance`
-- 普通成员每人：应签、已签、补签、未签、出勤率
-- 创建者不计入
-- 点击成员查看明细：`get_class_member_attendance`
-- 班级 CSV 导出
+出勤率按「正常签到数与补签数之和 ÷ 应签到数」计算。成员没有应签场次时，出勤率为 0。列表和班级出勤数据可以按页面提供的入口导出。
 
 ## 账号设置
 
-入口：个人主页 → 个人账号设置
+从个人主页打开「个人账号设置」。姓名、入学年份和专业可通过 `update_profile` 修改，学号保持固定。`change_password` 在云端核对旧密码，校验新密码后更新凭据。改密成功会保留当前会话，其他设备的旧会话失效。H5 保存资料和改密需要对应的图片验证码票据，Android 登录后可直接提交。
 
-`/pages/profile/settings`
-
-### 基本资料
-
-- 姓名（支持中文）
-- 入学年份
-- 专业
-- 学号只读
-- 保存需要 Turnstile 验证
-
-### 修改密码
-
-1. 本地用旧盐计算旧 hash；
-2. `verify_my_password` 用 `auth.users.encrypted_password` 校验旧密码；
-3. App 自动完成 Turnstile，H5 使用内联 Turnstile；
-4. `updatePassword` 更新 Supabase Auth；
-5. `set_password_salt` 写入新盐。
-
-不使用安全问题。
-
-## 需要重跑 SQL
-
-```text
-02_functions.sql
-03_rls_grants_seed.sql
-```
-
-新增/修改：
-
-- `verify_my_password(text)`
-- `get_home_checkins()`
-- `get_event_results` 排除发布者
-- `get_class_attendance` 排除 owner
-- `get_class_member_attendance` 增加 `timezone`
-
-表结构不变。
+相关接口通过 `valencia-checkin` 云函数提供。 [uniCloud 接入与部署](UNICLOUD_DEPLOY.md) · [发布验收与测试清单](PRODUCTION_TEST_CHECKLIST.md)

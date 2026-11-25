@@ -1,6 +1,5 @@
 <template>
   <view class="result-page">
-    <BridgeHost page-path="pages/checkin/result" />
     <AppHeader title="签到结果" subtitle="CHECK-IN RESULT" back />
 
     <view class="result-shell">

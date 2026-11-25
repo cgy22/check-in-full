@@ -1,6 +1,5 @@
 <template>
   <view class="my-appeals-page">
-    <BridgeHost page-path="pages/appeal/mine" />
     <AppHeader title="我申请的补签" subtitle="MY APPEALS" back />
 
     <view class="list-shell">

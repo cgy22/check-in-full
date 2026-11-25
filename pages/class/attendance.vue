@@ -1,6 +1,5 @@
 <template>
   <view class="attendance-page">
-    <BridgeHost page-path="pages/class/attendance" />
     <AppHeader :title="className || '出勤统计'" subtitle="ATTENDANCE" back />
 
     <view class="attendance-shell">

@@ -1,0 +1,26 @@
+{
+  "description": "签到状态与补签历史",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "event_id": { "bsonType": "string" },
+    "class_id": { "bsonType": "string" },
+    "user_id": { "bsonType": "string" },
+    "created_at": { "bsonType": "string" },
+    "status": { "bsonType": "string" },
+    "method": { "bsonType": ["string","null"] },
+    "is_late_slice": { "bsonType": "bool" },
+    "slice_index": { "bsonType": ["number","null"] },
+    "code_hash": { "bsonType": ["string","null"] },
+    "checked_in_at": { "bsonType": ["string","null"] },
+    "distance_m": { "bsonType": ["number","null"] },
+    "latitude": { "bsonType": ["number","null"] },
+    "longitude": { "bsonType": ["number","null"] },
+    "device_id": { "bsonType": ["string","null"] },
+    "device_label": { "bsonType": ["string","null"] },
+    "appeals": { "bsonType": "array" },
+    "failed_slice": { "bsonType": ["number","null"] },
+    "failures": { "bsonType": "int" }
+  }
+}

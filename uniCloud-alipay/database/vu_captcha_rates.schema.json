@@ -1,0 +1,10 @@
+{
+  "description": "验证码请求限流",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "count": { "bsonType": "int" },
+    "expires_at": { "bsonType": "number" }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "description": "签到活动和动态签到码密钥",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "class_id": { "bsonType": "string" },
+    "creator_id": { "bsonType": "string" },
+    "title": { "bsonType": "string" },
+    "description": { "bsonType": "string" },
+    "timezone": { "bsonType": "string" },
+    "start_at": { "bsonType": "string" },
+    "end_at": { "bsonType": "string" },
+    "location_name": { "bsonType": ["string","null"] },
+    "location_address": { "bsonType": ["string","null"] },
+    "location_lat": { "bsonType": ["number","null"] },
+    "location_lng": { "bsonType": ["number","null"] },
+    "coord_system": { "bsonType": "string" },
+    "geofence_radius_m": { "bsonType": "int" },
+    "is_surprise": { "bsonType": "bool" },
+    "require_location": { "bsonType": "bool" },
+    "require_device": { "bsonType": "bool" },
+    "method": { "bsonType": "string" },
+    "slice_seconds": { "bsonType": "int" },
+    "allow_previous_slice": { "bsonType": "bool" },
+    "created_at": { "bsonType": "string" },
+    "roster_at": { "bsonType": "number" },
+    "deleted": { "bsonType": "bool" },
+    "secret": { "bsonType": "string" }
+  }
+}

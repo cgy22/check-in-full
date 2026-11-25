@@ -1,6 +1,5 @@
 <template>
   <view class="appeal-page">
-    <BridgeHost page-path="pages/appeal/apply" />
     <AppHeader title="申请补签" subtitle="MAKEUP APPEAL" back />
 
     <view class="appeal-shell">
@@ -66,10 +65,9 @@
 
             <view v-if="!isApp" class="captcha">
               <text v-if="!isApp" class="field-label">人机验证</text>
-              <TurnstileGate
+              <CaptchaGate
                 ref="gateRef"
                 action="appeal"
-                :app-trigger="false"
                 @success="onCaptchaSuccess"
                 @error="onCaptchaError"
                 @expired="onCaptchaExpired"
@@ -111,14 +109,12 @@ import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import AppHeader from '../../components/AppHeader.vue'
 import MicaCard from '../../components/MicaCard.vue'
-import TurnstileGate from '../../components/TurnstileGate.vue'
+import CaptchaGate from '../../components/CaptchaGate.vue'
 import { useAuth } from '../../composables/useAuth'
-import { useCaptcha } from '../../composables/useCaptcha'
 import { rpc } from '../../utils/authApi'
 import { formatDeviceDateTime } from '../../utils/time'
 
 const auth = useAuth()
-const captcha = useCaptcha()
 const gateRef = ref(null)
 
 const recordId = ref('')
@@ -248,7 +244,7 @@ async function submit() {
   try {
     let ticket = null
     if (!isApp) {
-      ticket = await captcha.issue('appeal', captchaToken.value)
+      ticket = captchaToken.value
     }
     await rpc(
       'apply_makeup',

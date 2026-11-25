@@ -1,0 +1,14 @@
+{
+  "description": "会话与令牌摘要",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "user_id": { "bsonType": "string" },
+    "credential_version": { "bsonType": "int" },
+    "access_hash": { "bsonType": "string" },
+    "refresh_hash": { "bsonType": "string" },
+    "access_expires": { "bsonType": "number" },
+    "refresh_expires": { "bsonType": "number" }
+  }
+}

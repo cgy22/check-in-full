@@ -1,6 +1,5 @@
 <template>
   <view class="delete-page">
-    <BridgeHost page-path="pages/profile/delete-account" />
     <view class="delete-shell">
       <view class="delete-nav">
         <text class="delete-nav__back" @click="goBack">‹ 返回</text>

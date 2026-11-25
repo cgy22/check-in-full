@@ -1,0 +1,20 @@
+{
+  "description": "补签申请及审批结果",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "record_id": { "bsonType": "string" },
+    "event_id": { "bsonType": "string" },
+    "class_id": { "bsonType": "string" },
+    "creator_id": { "bsonType": "string" },
+    "user_id": { "bsonType": "string" },
+    "status": { "bsonType": "string" },
+    "attempt_no": { "bsonType": "int" },
+    "reason": { "bsonType": "string" },
+    "created_at": { "bsonType": "string" },
+    "reviewed_at": { "bsonType": ["string","null"] },
+    "review_note": { "bsonType": ["string","null"] },
+    "reviewed_by": { "bsonType": "string" }
+  }
+}

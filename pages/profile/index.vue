@@ -1,6 +1,5 @@
 <template>
   <view class="profile-page">
-    <BridgeHost page-path="pages/profile/index" />
     <view class="profile-orb"></view>
     <view class="profile-shell">
       <view class="profile-head">

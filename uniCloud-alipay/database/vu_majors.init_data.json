@@ -1,0 +1,62 @@
+[
+  {
+    "_id": "01",
+    "name": "语言学",
+    "sort_order": 1
+  },
+  {
+    "_id": "02",
+    "name": "𣿅语语言文学",
+    "sort_order": 2
+  },
+  {
+    "_id": "03",
+    "name": "外国语言文学",
+    "sort_order": 3
+  },
+  {
+    "_id": "04",
+    "name": "历史学",
+    "sort_order": 4
+  },
+  {
+    "_id": "05",
+    "name": "哲学",
+    "sort_order": 5
+  },
+  {
+    "_id": "06",
+    "name": "翻译学",
+    "sort_order": 6
+  },
+  {
+    "_id": "07",
+    "name": "新闻传播学",
+    "sort_order": 7
+  },
+  {
+    "_id": "08",
+    "name": "计算机科学与技术",
+    "sort_order": 8
+  },
+  {
+    "_id": "09",
+    "name": "经济学",
+    "sort_order": 9
+  },
+  {
+    "_id": "10",
+    "name": "法学",
+    "sort_order": 10
+  },
+  {
+    "_id": "11",
+    "name": "数学与应用数学",
+    "sort_order": 11
+  },
+  {
+    "_id": "12",
+    "name": "物理学",
+    "sort_order": 12
+  }
+]

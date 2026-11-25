@@ -1,6 +1,5 @@
 <template>
   <view class="manage-page">
-    <BridgeHost page-path="pages/checkin/manage" />
     <AppHeader title="我发布的签到" subtitle="MY CHECK-INS" back />
 
     <view class="manage-shell">

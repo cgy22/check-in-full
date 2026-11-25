@@ -1,0 +1,13 @@
+{
+  "name": "valencia-checkin",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@resvg/resvg-wasm": "2.6.2",
+    "svg-captcha": "1.4.0"
+  },
+  "cloudfunction-config": {
+    "memorySize": 512,
+    "timeout": 20
+  }
+}

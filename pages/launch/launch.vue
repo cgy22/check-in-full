@@ -1,6 +1,5 @@
 <template>
   <view class="launch-page">
-    <BridgeHost page-path="pages/launch/launch" />
     <view class="launch-orb"></view>
     <view class="launch-content">
       <view class="launch-mark">Va</view>

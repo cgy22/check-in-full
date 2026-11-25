@@ -1,6 +1,5 @@
 <template>
   <view class="create-page">
-    <BridgeHost page-path="pages/checkin/create" />
     <AppHeader title="发布签到" subtitle="CREATE CHECK-IN" back />
 
     <view class="create-shell">
@@ -270,10 +269,9 @@
 
           <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
-            <TurnstileGate
+            <CaptchaGate
               ref="gateRef"
               action="create_checkin"
-              :app-trigger="false"
               @success="captchaToken = $event"
               @error="captchaToken = ''"
               @expired="captchaToken = ''"
@@ -295,9 +293,8 @@ import { computed, ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import AppHeader from '../../components/AppHeader.vue'
 import MicaCard from '../../components/MicaCard.vue'
-import TurnstileGate from '../../components/TurnstileGate.vue'
+import CaptchaGate from '../../components/CaptchaGate.vue'
 import { useAuth } from '../../composables/useAuth'
-import { useCaptcha } from '../../composables/useCaptcha'
 import { getServerTime, rpc } from '../../utils/authApi'
 import { resetHomeCache } from '../../utils/homeCache'
 import { getCurrentGcj02 } from '../../utils/location'
@@ -311,7 +308,6 @@ import {
 } from '../../utils/time'
 
 const auth = useAuth()
-const captcha = useCaptcha()
 const gateRef = ref(null)
 const captchaToken = ref('')
 
@@ -529,7 +525,7 @@ async function submit() {
 
     let captchaTicket = null
     if (!isApp) {
-      captchaTicket = await captcha.issue('create_checkin', captchaToken.value)
+      captchaTicket = captchaToken.value
     }
 
     if (timeMode.value === 'duration') {

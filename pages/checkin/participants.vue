@@ -1,6 +1,5 @@
 <template>
   <view class="participants-page">
-    <BridgeHost page-path="pages/checkin/participants" />
     <AppHeader title="应签到人员" subtitle="PARTICIPANTS" back />
 
     <view class="participants-shell">

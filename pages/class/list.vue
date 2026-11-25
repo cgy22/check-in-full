@@ -1,6 +1,5 @@
 <template>
   <view class="class-list-page">
-    <BridgeHost page-path="pages/class/list" />
     <AppHeader :title="title" :subtitle="subtitle" back show-plus @plus="sheetVisible = true" />
 
     <view class="class-list-shell">

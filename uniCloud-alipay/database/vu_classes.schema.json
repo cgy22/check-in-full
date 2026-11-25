@@ -1,0 +1,15 @@
+{
+  "description": "班级及邀请码信息",
+  "bsonType": "object",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "properties": {
+    "_id": { "bsonType": "string" },
+    "name": { "bsonType": "string" },
+    "owner_id": { "bsonType": "string" },
+    "invite_code": { "bsonType": "string" },
+    "invite_expires_at": { "bsonType": "string" },
+    "created_at": { "bsonType": "string" },
+    "deleted": { "bsonType": "bool" },
+    "version": { "bsonType": "int" }
+  }
+}

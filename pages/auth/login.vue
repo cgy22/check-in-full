@@ -1,6 +1,5 @@
 <template>
   <view class="auth-page">
-    <BridgeHost page-path="pages/auth/login" />
     <view class="auth-orb auth-orb--one"></view>
     <view class="auth-orb auth-orb--two"></view>
 
@@ -45,11 +44,10 @@
             </view>
           </view>
 
-          <view class="captcha" :class="{ 'captcha--auto': isApp }">
-            <TurnstileGate
+          <view class="captcha">
+            <CaptchaGate
               ref="captchaRef"
               action="login"
-              :app-trigger="false"
               @success="onCaptchaSuccess"
               @error="onCaptchaError"
               @expired="onCaptchaExpired"
@@ -83,7 +81,7 @@
 import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import MicaCard from '../../components/MicaCard.vue'
-import TurnstileGate from '../../components/TurnstileGate.vue'
+import CaptchaGate from '../../components/CaptchaGate.vue'
 import { useAuth } from '../../composables/useAuth'
 import { loadLastStudentId } from '../../utils/session'
 
@@ -95,19 +93,11 @@ const captchaToken = ref('')
 const captchaRef = ref(null)
 const submitting = ref(false)
 
-const isApp = (() => {
-  try {
-    return uni.getSystemInfoSync().uniPlatform === 'app'
-  } catch (e) {
-    return false
-  }
-})()
-
 const busy = computed(() => auth.busy.value || submitting.value)
 
 const canSubmit = computed(() => {
   const valid = /^\d{12}$/.test(studentId.value) && password.value.length >= 8
-  return !busy.value && valid && (isApp || !!captchaToken.value)
+  return !busy.value && valid && !!captchaToken.value
 })
 
 function onCaptchaSuccess(token) {
@@ -130,23 +120,19 @@ function resetCaptcha() {
 
 async function submit() {
   if (!canSubmit.value || submitting.value) {
-    uni.showToast({ title: isApp ? '请填写学号和密码' : '请填写学号、密码并完成人机验证', icon: 'none' })
+    uni.showToast({ title: '请填写学号、密码并完成人机验证', icon: 'none' })
     return
   }
   submitting.value = true
   try {
-    let token = captchaToken.value
-    if (isApp) {
-      token = await captchaRef.value.open()
-    }
-    await auth.login(studentId.value, password.value, token)
+    await auth.login(studentId.value, password.value, captchaToken.value)
     uni.showToast({ title: '登录成功', icon: 'success' })
     setTimeout(() => {
       uni.switchTab({ url: '/pages/index/index' })
     }, 350)
   } catch (e) {
     uni.showToast({ title: e.message || '登录失败', icon: 'none', duration: 2500 })
-    if (e.code === 'CAPTCHA_FAILED' || e.code === 'INVALID_CREDENTIALS') resetCaptcha()
+    resetCaptcha()
   } finally {
     submitting.value = false
   }
@@ -303,9 +289,6 @@ onShow(() => {
 }
 .captcha {
   margin-top: 16px;
-}
-.captcha--auto {
-  margin-top: 0;
 }
 .primary-btn {
   margin-top: 20px;
