@@ -3,27 +3,23 @@
 #   /valencia/check-in/.htaccess
 # It must be next to index.html.
 
-# Apache 2.2 / 2.4 compatible.
-
 <IfModule mod_headers.c>
     <FilesMatch "^(index\.html|version\.json)$">
-        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
+        Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header always set Pragma "no-cache"
+        Header always set Expires "0"
     </FilesMatch>
 
-    # Avoid 304 responses for the app entry.
-    Header unset ETag
+    # IMPORTANT:
+    # "Header always" also applies to 404/ErrorDocument responses.
+    # This prevents a missing/hashed chunk from being cached as HTML.
+    <FilesMatch "\.(js|mjs|css)$">
+        Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header always set Pragma "no-cache"
+        Header always set Expires "0"
+    </FilesMatch>
 
-</IfModule>
-
-<IfModule mod_setenvif.c>
-    SetEnvIf Request_URI "^/valencia/check-in/assets/" VU_HASHED_ASSET
-</IfModule>
-
-<IfModule mod_headers.c>
-    # Vite emits content-hashed files here.
-    Header set Cache-Control "public, max-age=31536000, immutable" env=VU_HASHED_ASSET
+    Header always unset ETag
 </IfModule>
 
 DirectoryIndex index.html

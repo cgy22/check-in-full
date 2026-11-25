@@ -14,7 +14,7 @@ The project is intentionally opinionated:
 
 - **No email registration.** A student signs up with a name, enrollment year, major, and password. The system generates a 12-digit student ID.
 - **No password recovery by email.** The student ID is the only login identifier. Users are warned repeatedly to save it.
-- **Captcha before sensitive actions.** Cloudflare Turnstile protects registration, login, class creation, class joining, check-in publishing, profile changes, password changes, and appeals.
+- **CAPTCHA where it matters.** Registration and login are always protected by Cloudflare Turnstile. H5 also requires it for class creation/joining, check-in publishing, profile/password changes, and appeals. The Android app skips those non-auth challenges to keep the installed-app flow smooth, while server-side authorization and limits remain in force.
 - **Server-authoritative time.** Check-in status, rotating codes, late slices, and timezone conversion are calculated by PostgreSQL, not by the phone clock.
 - **Strict RLS.** Business writes happen through `SECURITY DEFINER` RPCs. Direct table writes are revoked.
 - **No map dependency.** The 1 km rule uses the publisher's device location as the circle center. There is no place search, map tile, POI lookup, or map API key.
@@ -57,7 +57,7 @@ No real student, employee, or institutional data should be entered into demonstr
 - Two time modes:
   - **Start from publication**: starts immediately, lasts 1–10080 minutes.
   - **Absolute time**: local wall-clock date/time plus an IANA timezone, converted to UTC by PostgreSQL.
-- Title, description, surprise mode, location requirement, optional device binding.
+- Title defaults to the selected class name plus “签到” (for example, “计算机 1 班签到”); description is optional. Surprise mode, location requirement, and optional device binding are configurable.
 - Method: six-digit code, QR code, or both.
 - Creator is not a participant and is excluded from attendance statistics.
 - Delete a not-started event; end an active event early.
@@ -420,6 +420,45 @@ At minimum verify:
 
 ---
 
+## 🛡️ CAPTCHA Policy
+
+The CAPTCHA policy differs by environment:
+
+| Environment | Registration | Login | Other sensitive actions |
+|---|---|---|---|
+| H5 | Turnstile | Turnstile | Turnstile |
+| Android App | Turnstile before the form | Turnstile | No Turnstile UI |
+
+### 📱 Why the Android app skips most challenges
+
+The Android app is an installed, signed client with a native bridge. Requiring a Turnstile challenge for routine actions such as creating a class, joining a class, publishing a check-in, editing a profile, changing a password, or filing an appeal interrupts the flow repeatedly. For a small campus workflow, that friction is disproportionate.
+
+The app therefore keeps CAPTCHA only at the two entry points where automated account abuse matters most:
+
+- registration;
+- login.
+
+Registration is gated before the form: the app completes Turnstile first, and only then reveals the registration fields.
+
+### 🌐 H5 remains unchanged
+
+H5 keeps the inline Turnstile widget for all protected actions. Browser clients are easier to automate, so the stricter policy remains there.
+
+### 🛡️ Server-side fallback
+
+Removing a client challenge does not remove authorization:
+
+- RLS and ownership checks still apply;
+- RPCs still validate `auth.uid()`, membership, event state, and payloads;
+- check-in attempts are limited to five failures per 30-second slice;
+- Supabase Auth applies its own login/registration rate limits;
+- one-time CAPTCHA tickets are still consumed whenever a client supplies one;
+- audit logs record sensitive management actions.
+
+For App compatibility, the affected RPCs accept a `null` ticket and skip ticket consumption. This is a deliberate usability trade-off; H5 still presents the challenge in its UI. Direct API abuse is mitigated by the server controls above, not by the absence of a client widget.
+
+---
+
 ## 🔐 Security Model
 
 - RLS is enabled on all 13 public tables.
@@ -436,7 +475,7 @@ At minimum verify:
 - Code slices are 30 seconds; only the current and immediately previous slice are accepted.
 - Five failures per user per slice are allowed.
 - Turnstile tickets are single-use and purpose-bound.
-- Profile changes, password changes, class creation/joining, publishing, and appeals require CAPTCHA.
+- Registration and login always require CAPTCHA. H5 also requires CAPTCHA for profile/password changes, class creation/joining, publishing, and appeals; the Android app skips those non-auth challenges.
 - Destructive actions are protected by role checks, confirmations, and audit logs.
 - Account deletion requires the full student ID, the confirmation text, a checkbox, and a final modal.
 - No `service_role` key is present in client code.
@@ -529,7 +568,7 @@ Dorn Hub.
 
 - **不使用邮箱注册。** 学生填写姓名、入学年份、专业和密码，系统自动生成 12 位学号。
 - **不提供邮箱找回密码。** 学号是唯一登录标识，系统会反复提醒用户保存学号。
-- **敏感操作前进行人机验证。** 注册、登录、建班、加入班级、发布签到、修改资料、修改密码、申请补签均受 Cloudflare Turnstile 保护。
+- **在必要位置进行人机验证。** 注册和登录始终受 Cloudflare Turnstile 保护。H5 端的建班、加入班级、发布签到、修改资料/密码、申请补签也需要验证。Android App 为保持已安装应用的流畅体验，跳过这些非登录/注册验证，但服务端授权与限制仍然生效。
 - **时间以服务端为准。** 签到状态、动态码、上一时间片、时区换算全部由 PostgreSQL 计算，不依赖手机时钟。
 - **严格 RLS。** 业务写入只通过 `SECURITY DEFINER` RPC 完成，直接写表权限被撤销。
 - **不依赖地图。** 1 km 校验以发布者发布时的设备位置为圆心，不提供地点搜索、地图瓦片、POI 或地图 Key。
@@ -572,7 +611,7 @@ Dorn Hub.
 - 两种时间方式：
   - **从发布起**：发布后立即开始，持续 1–10080 分钟。
   - **指定时间**：填写当地墙上时间与 IANA 时区，由 PostgreSQL 换算成 UTC。
-- 标题、说明、突击签到、位置校验、可选设备绑定。
+- 标题默认“所选班级名称 + 签到”（例如“计算机 1 班签到”），文字说明可选；支持突击签到、位置校验、可选设备绑定。
 - 签到方式：六位数字、二维码、两者都允许。
 - 创建者不参与签到，也不计入出勤统计。
 - 未开始的签到可以删除；正在签到的签到可以提前结束。
@@ -907,6 +946,45 @@ HBuilderX 发行：
 
 ---
 
+## 🛡️ 人机验证策略
+
+不同环境采用不同策略：
+
+| 环境 | 注册 | 登录 | 其他敏感操作 |
+|---|---|---|---|
+| H5 | Turnstile | Turnstile | Turnstile |
+| Android App | 先验证，后显示表单 | Turnstile | 不显示验证 |
+
+### 📱 为什么 Android App 减少验证
+
+Android App 是已安装、已签名的客户端，并通过原生桥接访问服务。如果建班、加入班级、发布签到、修改资料、修改密码、申请补签等日常操作每次都弹 Turnstile，会频繁打断流程，对校园签到场景来说体验成本过高。
+
+因此 App 只在两个最需要防止自动化账号滥用的入口保留验证：
+
+- 注册；
+- 登录。
+
+注册采用“先验证、后填表”：先完成 Turnstile，通过后才显示注册表单。
+
+### 🌐 H5 保持不变
+
+H5 端所有受保护操作继续使用内联 Turnstile。浏览器环境更容易被自动化，因此保留更严格的策略。
+
+### 🛡️ 服务端兜底
+
+去掉客户端验证不等于去掉授权：
+
+- RLS 与归属校验仍然生效；
+- RPC 仍校验 `auth.uid()`、成员身份、活动状态和参数；
+- 签到尝试限制为每个 30 秒时间片最多 5 次失败；
+- Supabase Auth 自身有登录/注册速率限制；
+- 客户端提供一次性 ticket 时仍会消费；
+- 敏感管理操作写入审计日志。
+
+为兼容 App，相关 RPC 允许 `p_captcha_ticket = null` 并跳过 ticket 消费。这是明确的体验取舍；H5 页面仍然展示验证。接口滥用由上述服务端控制兜底，而不是依赖客户端是否显示验证组件。
+
+---
+
 ## 🔐 安全模型
 
 - 13 张 public 表全部启用 RLS。
@@ -923,7 +1001,7 @@ HBuilderX 发行：
 - 时间片 30 秒，只接受当前和上一时间片。
 - 同一用户同一时间片最多 5 次失败。
 - Turnstile 票据一次性、用途绑定。
-- 修改资料、修改密码、建班、加入班级、发布签到、申请补签需要人机验证。
+- 注册和登录始终需要人机验证。H5 端的修改资料/密码、建班、加入班级、发布签到、申请补签也需要验证；Android App 跳过这些非登录/注册验证。
 - 删除类操作依赖角色校验、二次确认和审计日志。
 - 注销账号必须输入完整学号、确认文字、勾选确认，并再次弹窗确认。
 - 客户端代码中没有 `service_role`。

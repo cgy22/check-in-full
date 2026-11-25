@@ -88,12 +88,12 @@
           </view>
 
           <view class="field">
-            <text class="field__label">文字说明</text>
+            <text class="field__label">文字说明（可选）</text>
             <textarea
               v-model="description"
               class="field__textarea"
               maxlength="1000"
-              placeholder="说明签到要求、注意事项等"
+              placeholder="可选：说明签到要求、注意事项等"
               placeholder-class="field__placeholder"
             />
             <text class="field__count">{{ description.length }}/1000</text>
@@ -268,7 +268,7 @@
             </text>
           </view>
 
-          <view class="captcha" :class="{ 'captcha--auto': isApp }">
+          <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
             <TurnstileGate
               ref="gateRef"
@@ -339,6 +339,7 @@ const endDate = ref(dateInputInZone(defaultEnd, deviceZone))
 const endTime = ref(timeInputInZone(defaultEnd, deviceZone))
 
 const title = ref('')
+let autoTitle = ''
 const description = ref('')
 const requireLocation = ref(true)
 const isSurprise = ref(false)
@@ -369,6 +370,21 @@ const methods = [
 
 const selectedClass = computed(() => classes.value[selectedClassIndex.value] || null)
 
+function defaultTitleForClass(cls) {
+  const name = String((cls && cls.name) || '').trim()
+  if (!name) return ''
+  return name.endsWith('班') ? `${name}签到` : `${name}班签到`
+}
+
+function applyAutoTitle(force = false) {
+  const next = defaultTitleForClass(selectedClass.value)
+  if (!next) return
+  if (force || !title.value.trim() || title.value === autoTitle) {
+    title.value = next
+    autoTitle = next
+  }
+}
+
 function applyClassFromQuery() {
   if (!classIdFromQuery.value) return
   const idx = classes.value.findIndex(c => c.id === classIdFromQuery.value)
@@ -389,6 +405,7 @@ async function loadClasses() {
     classes.value = (data && data.items) || []
     if (selectedClassIndex.value >= classes.value.length) selectedClassIndex.value = 0
     applyClassFromQuery()
+    applyAutoTitle()
   } catch (e) {
     classesError.value = e.message || '网络请求失败'
   } finally {
@@ -415,6 +432,7 @@ function onEndTime(e) {
 
 function onClassChange(e) {
   selectedClassIndex.value = Number(e.detail.value)
+  applyAutoTitle()
 }
 
 function onLocationToggle(e) {
@@ -467,14 +485,10 @@ async function submit() {
     uni.showToast({ title: '请选择班级', icon: 'none' })
     return
   }
-  const t = title.value.trim()
+  const t = title.value.trim() || defaultTitleForClass(selectedClass.value)
   const desc = description.value.trim()
   if (t.length < 2 || t.length > 60) {
     uni.showToast({ title: '活动名称需为 2-60 个字符', icon: 'none' })
-    return
-  }
-  if (desc.length < 2 || desc.length > 1000) {
-    uni.showToast({ title: '文字说明需为 2-1000 个字符', icon: 'none' })
     return
   }
 
@@ -513,9 +527,10 @@ async function submit() {
 
     const accessToken = await auth.ensureAccessToken()
 
-    let captchaTicketToken = captchaToken.value
-    if (isApp) captchaTicketToken = await gateRef.value.open()
-    const captchaTicket = await captcha.issue('create_checkin', captchaTicketToken)
+    let captchaTicket = null
+    if (!isApp) {
+      captchaTicket = await captcha.issue('create_checkin', captchaToken.value)
+    }
 
     if (timeMode.value === 'duration') {
       const server = await getServerTime(accessToken)
@@ -604,7 +619,8 @@ function goCreateClass() {
 
 function createAnother() {
   successInfo.value = null
-  title.value = ''
+  title.value = defaultTitleForClass(selectedClass.value)
+  autoTitle = title.value
   description.value = ''
   timeMode.value = 'duration'
   durationMinutes.value = 60

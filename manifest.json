@@ -2,8 +2,8 @@
     "name" : "瓦莱希雅大学签到",
     "appid" : "__UNI__565F905",
     "description" : "瓦莱希雅大学签到系统",
-    "versionName" : "1.0.1",
-    "versionCode" : 2,
+    "versionName" : "1.0.3",
+    "versionCode" : 4,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -11,7 +11,7 @@
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
         "splashscreen" : {
-            "alwaysShowBeforeRender" : true,
+            "alwaysShowBeforeRender" : false,
             "waiting" : false,
             "autoclose" : true,
             "delay" : 0

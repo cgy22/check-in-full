@@ -62,7 +62,7 @@
         </view>
       </MicaCard>
 
-      <MicaCard v-else-if="!captchaPassed && !isApp" class="register-card">
+      <MicaCard v-else-if="!captchaPassed" class="register-card">
         <view class="register-card__body gate">
           <text class="step">STEP 01</text>
           <text class="gate__title">先完成人机验证</text>
@@ -172,16 +172,6 @@
             <text class="rule__text">密码至少 8 位，必须同时包含字母和数字，不能有空格</text>
           </view>
 
-          <TurnstileGate
-            v-if="isApp"
-            ref="gateRef"
-            action="register"
-            :app-trigger="false"
-            @success="onCaptchaSuccess"
-            @error="onCaptchaError"
-            @expired="onCaptchaExpired"
-          />
-
           <button class="primary-btn" :disabled="auth.busy.value || submitting" @click="submit">
             {{ auth.busy.value ? '注册中…' : (submitting ? '验证中…' : '生成学号并注册') }}
           </button>
@@ -210,13 +200,6 @@ const captchaPassed = ref(false)
 const captchaToken = ref('')
 const submitting = ref(false)
 
-const isApp = (() => {
-  try {
-    return uni.getSystemInfoSync().uniPlatform === 'app'
-  } catch (e) {
-    return false
-  }
-})()
 const gateRef = ref(null)
 const showPassword = ref(false)
 const successInfo = ref(null)
@@ -277,10 +260,8 @@ async function submit() {
 
   submitting.value = true
   try {
-    let token = captchaToken.value
-    if (isApp) {
-      token = await gateRef.value.open()
-    } else if (!token) {
+    const token = captchaToken.value
+    if (!token) {
       captchaPassed.value = false
       uni.showToast({ title: '请先完成人机验证', icon: 'none' })
       submitting.value = false

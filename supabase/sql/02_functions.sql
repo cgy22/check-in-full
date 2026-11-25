@@ -308,7 +308,8 @@ begin
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
 
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'profile_update', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'profile_update', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 
@@ -367,7 +368,8 @@ begin
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
 
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'change_password', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'change_password', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 
@@ -503,7 +505,8 @@ begin
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
 
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'create_class', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'create_class', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 
@@ -571,7 +574,8 @@ begin
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
 
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'join_class', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'join_class', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 
@@ -1074,8 +1078,8 @@ begin
   if char_length(v_title) < 2 or char_length(v_title) > 60 then
     return public.api_error('INVALID_TITLE', '活动名称需为 2-60 个字符');
   end if;
-  if char_length(v_description) < 2 or char_length(v_description) > 1000 then
-    return public.api_error('INVALID_DESCRIPTION', '文字说明需为 2-1000 个字符');
+  if char_length(v_description) > 1000 then
+    return public.api_error('INVALID_DESCRIPTION', '文字说明不能超过 1000 个字符');
   end if;
   if v_timezone = '' or not exists (
     select 1 from pg_timezone_names t where t.name = v_timezone
@@ -1504,7 +1508,8 @@ begin
   if v_uid is null then
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'create_checkin', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'create_checkin', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
   return public.api_ok(jsonb_build_object('verified', true));
@@ -1544,7 +1549,8 @@ begin
   if v_uid is null then
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'create_checkin', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'create_checkin', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 
@@ -1600,7 +1606,8 @@ begin
   if v_uid is null then
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'create_checkin', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'create_checkin', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 
@@ -2027,7 +2034,8 @@ begin
   if v_uid is null then
     return public.api_error('UNAUTHENTICATED', '请先登录');
   end if;
-  if not public.consume_captcha_ticket(p_captcha_ticket, 'appeal', v_uid) then
+  if p_captcha_ticket is not null
+     and not public.consume_captcha_ticket(p_captcha_ticket, 'appeal', v_uid) then
     return public.api_error('CAPTCHA_REQUIRED', '请先完成人机验证');
   end if;
 

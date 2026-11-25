@@ -21,7 +21,7 @@
             />
           </view>
 
-          <view class="captcha" :class="{ 'captcha--auto': isApp }">
+          <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
             <TurnstileGate
               ref="gateRef"
@@ -114,9 +114,10 @@ async function submit() {
   }
   submitting.value = true
   try {
-    let token = captchaToken.value
-    if (isApp) token = await gateRef.value.open()
-    const ticket = await captcha.issue('join_class', token)
+    let ticket = null
+    if (!isApp) {
+      ticket = await captcha.issue('join_class', captchaToken.value)
+    }
     const accessToken = await auth.ensureAccessToken()
     const data = await rpc(
       'join_class',

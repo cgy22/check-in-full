@@ -49,7 +49,7 @@
             <view class="readonly-box">{{ profile.student_id }}</view>
           </view>
 
-          <view class="captcha" :class="{ 'captcha--auto': isApp }">
+          <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
             <TurnstileGate
               ref="basicGateRef"
@@ -110,7 +110,7 @@
             />
           </view>
 
-          <view class="captcha" :class="{ 'captcha--auto': isApp }">
+          <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
             <TurnstileGate
               ref="passwordGateRef"
@@ -243,9 +243,10 @@ async function saveBasic() {
   }
   savingBasic.value = true
   try {
-    let token = basicToken.value
-    if (isApp) token = await basicGateRef.value.open()
-    const ticket = await captcha.issue('profile_update', token)
+    let ticket = null
+    if (!isApp) {
+      ticket = await captcha.issue('profile_update', basicToken.value)
+    }
     const data = await rpc(
       'update_profile',
       {
@@ -286,10 +287,11 @@ async function savePassword() {
     const oldHash = sha256Hex(`${oldSalt}|${password.oldPassword}`)
     await rpc('verify_my_password', { p_password_hash: oldHash }, accessToken)
 
-    // 2) 验证真人，拿一次性 ticket
-    let token = passwordToken.value
-    if (isApp) token = await passwordGateRef.value.open()
-    const ticket = await captcha.issue('change_password', token)
+    // 2) H5 验证真人；App 跳过
+    let ticket = null
+    if (!isApp) {
+      ticket = await captcha.issue('change_password', passwordToken.value)
+    }
 
     // 3) 生成新盐/新 hash，先更新 Supabase Auth，再保存新盐
     const newSalt = randomHex(16)

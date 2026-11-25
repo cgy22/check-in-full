@@ -33,7 +33,7 @@
             <text class="field__hint">过期后邀请码失效，已在班级内的成员不受影响。</text>
           </view>
 
-          <view class="captcha" :class="{ 'captcha--auto': isApp }">
+          <view v-if="!isApp" class="captcha">
             <text v-if="!isApp" class="field__label">人机验证</text>
             <TurnstileGate
               ref="gateRef"
@@ -137,9 +137,10 @@ async function submit() {
   }
   submitting.value = true
   try {
-    let token = captchaToken.value
-    if (isApp) token = await gateRef.value.open()
-    const ticket = await captcha.issue('create_class', token)
+    let ticket = null
+    if (!isApp) {
+      ticket = await captcha.issue('create_class', captchaToken.value)
+    }
     const accessToken = await auth.ensureAccessToken()
     const data = await rpc(
       'create_class',

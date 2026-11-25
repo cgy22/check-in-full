@@ -64,7 +64,7 @@
             />
             <text class="reason-count">至少 10 字 · {{ reason.length }}/500</text>
 
-            <view class="captcha" :class="{ 'captcha--auto': isApp }">
+            <view v-if="!isApp" class="captcha">
               <text v-if="!isApp" class="field-label">人机验证</text>
               <TurnstileGate
                 ref="gateRef"
@@ -246,9 +246,10 @@ async function submit() {
   }
   submitting.value = true
   try {
-    let token = captchaToken.value
-    if (isApp) token = await gateRef.value.open()
-    const ticket = await captcha.issue('appeal', token)
+    let ticket = null
+    if (!isApp) {
+      ticket = await captcha.issue('appeal', captchaToken.value)
+    }
     await rpc(
       'apply_makeup',
       {
