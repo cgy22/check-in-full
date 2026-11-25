@@ -1,7 +1,7 @@
 {
     "name" : "瓦莱希雅大学签到",
-    "appid" : "__UNI__4ED33A5",
-    "description" : "瓦莱希雅大学签到系统",
+    "appid" : "__UNI__8E710E8",
+    "description" : "瓦莱希雅大学签到系统dcloud",
     "versionName" : "1.0.3",
     "versionCode" : 4,
     "transformPx" : false,
@@ -124,7 +124,7 @@
         "publicPath" : "/valencia/check-in/",
         "router" : {
             "mode" : "hash",
-            "base" : "/valencia/check-in/"
+            "base" : "/valencia/check-in-dcloud/"
         }
     },
     "vueVersion" : "3"
